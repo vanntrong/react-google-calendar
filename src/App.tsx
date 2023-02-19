@@ -1,25 +1,31 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import CalendarHeader from "components/calendar-header";
+import EventModal from "components/event-modal";
+import Month from "components/month";
+import Sidebar from "components/sidebar";
+import { AppContext } from "context/app.context";
+import { Dayjs } from "dayjs";
+import { useContext, useEffect, useState } from "react";
+import { getMonth } from "utils";
 
 function App() {
+  const [currentMonth, setCurrentMonth] = useState<Dayjs[][]>();
+  const { monthIndex, showEventModal } = useContext(AppContext);
+
+  useEffect(() => {
+    setCurrentMonth(getMonth(monthIndex));
+  }, [monthIndex]);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      {showEventModal && <EventModal />}
+      <div className="h-screen flex flex-col">
+        <CalendarHeader />
+        <div className="flex flex-1">
+          <Sidebar />
+          {currentMonth && <Month month={currentMonth} />}
+        </div>
+      </div>
+    </>
   );
 }
 
